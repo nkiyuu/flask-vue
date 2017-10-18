@@ -10,12 +10,19 @@ DATABASE = 'db.db'
 @app.route('/', methods=['GET'])
 def hello_world():
 
+    todos = []
     with TodoModel() as Todo:
-        todos = Todo.get_todos_all()
+        todos_data = Todo.get_todos_all()
+        for todo in todos_data:
+           todos.append({
+               'task': todo.todo,
+               'done': todo.done
+           })
 
     return render_template(
         'top.html',
-        todos=todos)
+        todos=todos
+    )
 
 
 @app.route('/todo', methods=['POST'])

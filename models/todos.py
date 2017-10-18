@@ -26,12 +26,7 @@ class TodoModel():
         todos_data = self.session.query(Todo).all()
         self.session.flush()
         data = []
-        for todo in todos_data:
-            data.append({
-                'task': todo.todo,
-                'done': todo.done
-            })
-        return data
+        return todos_data
 
     def get_todo_by_id(self, id=-1):
         '''
