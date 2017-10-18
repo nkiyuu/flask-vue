@@ -1,0 +1,56 @@
+{%  block script %}
+<script src="../static/vue.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+{% endblock %}
+
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+    <meta charset="UTF-8">
+    <title>todo サンプル</title>
+    </head>
+<body>
+    <div id="myapp">
+        <h1>test</h1>
+        <ul>
+            <li v-for="todo in todos ">
+                <input type="checkbox" v-on:click="todo.done = !todo.done">[[ todo.task ]]</li>
+        </ul>
+        <input type="text" v-model="newTodo"><input type="button" value="追加" v-on:click="add()">
+    </div>
+    <script>
+        var vm = new Vue({
+            el: '#myapp',
+            delimiters: ["[[", "]]"],
+            data: {
+                todos: {{ todos | tojson }},
+                newTodo: ''
+            },
+            methods: {
+                add: function(){
+                    this.todos.push({
+                        'task': this.newTodo,
+                        'done': false
+                    })
+
+                    axios({
+                        method: 'post',
+                        url: 'http://localhost:5000/todo',
+                        headers: {
+                            'Content-type': 'application/json'
+                        },
+                        data: {
+                            'task': this.newTodo
+                        },
+                    }).then( res => {
+                        console.log(res)
+                    }).catch (error => {
+                        console.log(error)
+                    })
+                }
+            }
+        })
+    </script>
+
+</body>
+</html>
