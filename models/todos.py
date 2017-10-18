@@ -47,4 +47,11 @@ class TodoModel():
         self.session.add(new_todo)
         self.session.flush()
         self.session.commit()
-        return {'task': new_todo.todo, 'done': False}
+        return new_todo
+
+    def del_todo(self, id):
+        print(id)
+        self.session.query(Todo).filter_by(id=int(id)).delete()
+        self.session.flush()
+        self.session.commit()
+        return null

@@ -13,8 +13,8 @@
     <div id="myapp">
         <h1>test</h1>
         <ul>
-            <li v-for="todo in todos ">
-                <input type="checkbox" v-on:click="todo.done = !todo.done">[[ todo.task ]]</li>
+            <li v-for="(todo, index) in todos ">
+                <input type="checkbox" v-on:click="todo.done = !todo.done">[[ todo.task ]]<input type="button" v-on:click="del(index, todo.id)" value="削除"> </li>
         </ul>
         <input type="text" v-model="newTodo"><input type="button" value="追加" v-on:click="add()">
     </div>
@@ -28,11 +28,6 @@
             },
             methods: {
                 add: function(){
-                    this.todos.push({
-                        'task': this.newTodo,
-                        'done': false
-                    })
-
                     axios({
                         method: 'post',
                         url: 'http://localhost:5000/todo',
@@ -43,10 +38,32 @@
                             'task': this.newTodo
                         },
                     }).then( res => {
+                        this.todos.push({
+                            'id': res.data['id'],
+                            'task': res.data['task'],
+                            'done': false
+                        })
                         console.log(res)
                     }).catch (error => {
                         console.log(error)
                     })
+                    this.newTodo = ''
+                },
+                del: function(index, id){
+                    if (confirm('OK?')) {
+                        this.todos.splice(index, 1)
+
+                        axios({
+                            method: 'delete',
+                            url: 'http://localhost:5000/todo',
+                            headers: {
+                                'Content-type': 'application/json'
+                            },
+                            data: {
+                                'id': id
+                            }
+                        })
+                    }
                 }
             }
         })
